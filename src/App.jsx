@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
@@ -8,7 +8,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  async function fetchMoviesHandler() {
+  const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -19,7 +19,6 @@ function App() {
       }
 
       const data = await response.json();
-
       const transformMovies = data.results.map((movieData) => {
         return {
           id: movieData.episode_id,
@@ -33,7 +32,11 @@ function App() {
       setError(error.message);
     }
     setIsLoading(false);
-  }
+  },[]);
+
+  useEffect(() => {
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
 
   let content = <p>Found no movies</p>;
 
@@ -59,4 +62,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
